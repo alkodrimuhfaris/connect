@@ -6,37 +6,25 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import {Entypo, AntDesign, MaterialCommunityIcons} from '@expo/vector-icons';
+import {Entypo, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import SafeAreaView from 'react-native-safe-area-view';
+import picturePlaceholder from '../assets/photos/profilePlaceholder.png';
 
-export default function LoginEmail() {
-  const [phone, setPhone] = React.useState();
-  const [countryCode, setCountryCode] = React.useState('');
-  const [countryName, setCountryName] = React.useState('Indonesia');
-  const [openList, setOpenList] = React.useState(false);
+export default function CreateNew() {
+  const [name, setName] = React.useState('');
+  const [avatar, setAvatar] = React.useState('');
   const navigation = useNavigation();
 
-  const delPhone = () => {
-    setPhone(null);
+  const delName = () => {
+    setName('');
   };
 
-  const goConfirm = () => {
-    navigation.navigate('ConfirmPhone', {phone});
-    console.log('go login');
-  };
-
-  const goToTOC = () => {
-    console.log('go to TOC');
-  };
-
-  const goToPrivacyPolicy = () => {
-    console.log('go to privacy policy');
-  };
-
-  const openCountryList = () => {
-    setOpenList(!openList);
+  const goNext = () => {
+    navigation.navigate('CreatePassword');
+    console.log('go next');
   };
 
   return (
@@ -44,45 +32,37 @@ export default function LoginEmail() {
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
       <View style={styles.top}>
         <View style={styles.titleWrapper}>
-          <Text style={styles.title}>
-            What's the phone number for this device?
-          </Text>
+          <Text style={styles.title}>Create a new account</Text>
         </View>
 
         <View style={styles.txtWrapper}>
           <Text style={styles.txt}>
-            By tapping the arrow button, you accept LINE's
+            Other people on CONNECT can see your display nameand profile media
           </Text>
-          <TouchableOpacity onPress={goToTOC}>
-            <Text style={[styles.txt, styles.txtLink]}>
-              Terms and Condition of Use
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.txt}> and </Text>
-          <TouchableOpacity onPress={goToPrivacyPolicy}>
-            <Text style={[styles.txt, styles.txtLink]}>Privacy Policy</Text>
+        </View>
+
+        <View style={styles.photoContainer}>
+          <TouchableOpacity style={styles.photoWrapper}>
+            <Image
+              source={avatar ? picturePlaceholder : picturePlaceholder}
+              style={styles.photo}
+            />
+            <View style={styles.iconWrapper}>
+              <Entypo name="camera" size={10} color="black" />
+            </View>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={styles.countrySelector}
-          onPress={openCountryList}>
-          <Text style={styles.country}>{countryName} </Text>
-          <AntDesign name="caretdown" size={12} color="black" />
-        </TouchableOpacity>
-
         <Form style={styles.form}>
-          <Item style={phone ? styles.itemEnter : null}>
-            <Label style={styles.labelStyle}>{countryCode}</Label>
+          <Item style={name ? styles.itemEnter : null}>
             <Input
-              placeholder="Phone Number"
-              value={phone}
-              keyboardType="numeric"
+              placeholder="What's your name?"
+              value={name}
               style={styles.input}
-              onChangeText={(e) => setPhone(e)}
+              onChangeText={(e) => setName(e)}
             />
-            {phone ? (
-              <TouchableOpacity onPress={delPhone}>
+            {name ? (
+              <TouchableOpacity onPress={delName}>
                 <Entypo name="cross" size={20} color="black" />
               </TouchableOpacity>
             ) : null}
@@ -92,9 +72,9 @@ export default function LoginEmail() {
 
       <View style={styles.bottom}>
         <TouchableOpacity
-          disabled={!phone}
-          onPress={goConfirm}
-          style={[styles.btn, phone ? styles.btnActive : null]}>
+          disabled={!name}
+          onPress={goNext}
+          style={[styles.btn, name ? styles.btnActive : null]}>
           <AntDesign name="arrowright" size={25} color="white" />
         </TouchableOpacity>
       </View>
@@ -132,6 +112,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 16,
     color: '#D2D2D2',
+  },
+  photoContainer: {
+    marginVertical: 10,
+    width: '100%',
+    paddingHorizontal: '5%',
+  },
+  photoWrapper: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    position: 'relative',
+  },
+  photo: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  iconWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 20,
+    height: 20,
+    borderRadius: 20,
+    backgroundColor: '#FAFAFA',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   txtLink: {
     color: '#56CF75',

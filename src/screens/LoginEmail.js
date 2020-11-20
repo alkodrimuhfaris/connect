@@ -97,9 +97,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     justifyContent: 'space-between',
+    backgroundColor: 'white',
   },
   top: {
-    marginTop: '20%',
+    marginTop: '10%',
     width: '100%',
   },
   form: {
