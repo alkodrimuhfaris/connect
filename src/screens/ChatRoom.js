@@ -362,7 +362,7 @@ export default function ChatRoom() {
       <View style={styles.chatParent}>
         {openOption ? (
           <View style={styles.option}>
-            <Text>Option Goes here</Text>
+            <Text>option goes here</Text>
           </View>
         ) : null}
       </View>
@@ -428,27 +428,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
-  buttomButton: {
-    padding: 10,
-  },
-  btnActive: {
-    backgroundColor: '#56CF75',
-  },
-  btn: {
-    backgroundColor: '#D2D2D2',
-    width: 50,
-    height: 'auto',
-    borderRadius: 70,
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   chatParent: {
     width: '100%',
     flex: 1,
   },
+  buttomButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 3,
+  },
   textAreaWrapper: {
-    width: '60%',
+    width: '70%',
   },
   textArea: {
     paddingHorizontal: '5%',
