@@ -30,7 +30,7 @@ export default function LoginEmail() {
   };
 
   const goLogin = () => {
-    // navigation.navigate('ProductStack', {screen: 'Product', params: {id}});
+    navigation.navigate('MainStack', {screen: 'MainScreen'});
     console.log('go login');
   };
 

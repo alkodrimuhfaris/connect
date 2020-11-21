@@ -12,9 +12,10 @@ import connectLogo from '../assets/logo/connectLogo.png';
 import {Feather, Ionicons, MaterialIcons} from '@expo/vector-icons';
 import SafeAreaView from 'react-native-safe-area-view';
 import moment from 'moment';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 function Header() {
+  const navigation = useNavigation();
   const addFriend = () => {
     console.log('add friend');
   };
@@ -24,7 +25,7 @@ function Header() {
   };
 
   const goToSetting = () => {
-    console.log('go to setting');
+    navigation.navigate('ProfileStack', {screen: 'Setting'});
   };
 
   return (
@@ -125,7 +126,7 @@ const apiChat = [
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
-    lastChat: 'Ajg!!',
+    lastChat: 'di mana?',
     unreadChat: 0,
     sendAt: '2020-11-18T11:13:40.000Z',
   },
@@ -179,7 +180,7 @@ const apiChat = [
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
-    lastChat: 'Ajg!!',
+    lastChat: 'weh??',
     unreadChat: 0,
     sendAt: '2020-11-18T11:13:40.000Z',
   },

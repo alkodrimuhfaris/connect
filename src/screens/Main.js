@@ -20,6 +20,11 @@ import AddFriends from './AddFriends';
 import MainScreen from './MainScreen';
 import ChatRoom from './ChatRoom';
 
+//Setting stack
+import Setting from './Setting';
+import Profile from './Profile';
+import Accounts from './Accounts';
+
 const Stack = createStackNavigator();
 
 const RegisterStack = () => {
@@ -107,6 +112,31 @@ const AuthStack = () => {
   );
 };
 
+const ProfileStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen
+        options={{title: 'Setting Screen'}}
+        name="Setting"
+        component={Setting}
+      />
+      <Stack.Screen
+        options={{title: 'Profile Screen'}}
+        name="Profile"
+        component={Profile}
+      />
+      <Stack.Screen
+        options={{title: 'Account Screen'}}
+        name="Account"
+        component={Accounts}
+      />
+    </Stack.Navigator>
+  );
+};
+
 class Main extends Component {
   render() {
     return (
@@ -117,6 +147,7 @@ class Main extends Component {
           }}>
           <Stack.Screen name="AuthStack" component={AuthStack} />
           <Stack.Screen name="MainStack" component={MainStack} />
+          <Stack.Screen name="ProfileStack" component={ProfileStack} />
         </Stack.Navigator>
       </NavigationContainer>
     );
