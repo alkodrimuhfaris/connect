@@ -1,4 +1,4 @@
-import {Form, Input, Item} from 'native-base';
+import {Form, Textarea, Item} from 'native-base';
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {Entypo} from '@expo/vector-icons';
@@ -23,7 +23,7 @@ export default function FormFormat({
         style={
           touched ? (error ? styles.itemEnterError : styles.itemEnter) : null
         }>
-        <Input
+        <Textarea
           placeholder={placeholder}
           value={value}
           secureTextEntry={secureEntry}
@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingRight: '5%',
     marginVertical: 5,
+  },
+  input: {
+    width: '100%',
   },
   itemEnter: {
     borderBottomColor: '#56CF75',

@@ -35,22 +35,22 @@ const settingData = [
   {
     title: 'Notifications',
     icon: 'ios-notifications',
-    navigate: 'Profile',
+    navigate: 'Notifications',
   },
   {
     title: 'Chats',
     icon: 'ios-chatboxes',
-    navigate: 'Profile',
+    navigate: 'Chats',
   },
   {
     title: 'Calls',
     icon: 'ios-call',
-    navigate: 'Profile',
+    navigate: 'Calls',
   },
   {
     title: 'Friends',
     icon: 'ios-people',
-    navigate: 'Profile',
+    navigate: 'Friends',
   },
 ];
 
@@ -99,7 +99,7 @@ export default function Setting() {
   const settingItem = settingData;
 
   const goToProfile = () => {
-    navigation.navigate('Profile')
+    navigation.navigate('Profile');
   };
 
   return (

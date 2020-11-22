@@ -9,6 +9,9 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import {Entypo} from '@expo/vector-icons';
+import ModalChangeName from '../modals/ChangeName';
+import ModalChangeStatus from '../modals/ChangeStatus';
+import ModalChangeUserID from '../modals/ChangeUserID';
 
 const data = [
   {
@@ -23,6 +26,9 @@ const data = [
 
 export default function Profile() {
   const [userData] = data;
+  const [modalName, setModalName] = React.useState(false);
+  const [modalStatus, setModalStatus] = React.useState(false);
+  const [modalID, setModalID] = React.useState(false);
 
   const changeAva = () => {
     console.log('change ava');
@@ -32,17 +38,33 @@ export default function Profile() {
     console.log('change phone');
   };
 
+  const changeID = () => {
+    setModalID(true);
+  };
+
   const changeName = () => {
-    console.log('change phone');
+    setModalName(true);
   };
 
   const changeStatus = () => {
-    console.log('change phone');
+    setModalStatus(true);
   };
 
   return (
     <SafeAreaView style={styles.parent}>
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
+
+      {/* modal change name */}
+      <ModalChangeName modalOpen={modalName} setModalOpen={setModalName} />
+
+      {/* modal change status */}
+      <ModalChangeStatus
+        modalOpen={modalStatus}
+        setModalOpen={setModalStatus}
+      />
+
+      <ModalChangeUserID modalOpen={modalID} setModalOpen={setModalID} />
+
       <View style={styles.header}>
         <Text style={styles.headerTxt}>Profile</Text>
       </View>
@@ -67,7 +89,7 @@ export default function Profile() {
           <Text style={styles.title}>Status Message</Text>
           <Text style={styles.statusMessage}>{userData.status}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonWrapper}>
+        <TouchableOpacity onPress={changeID} style={styles.buttonWrapper}>
           <Text style={styles.title}>User ID</Text>
           <Text style={styles.userID}>{userData.idName}</Text>
         </TouchableOpacity>

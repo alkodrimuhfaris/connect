@@ -5,13 +5,16 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import {CheckBox} from 'native-base';
-import ModalCenter from '../components/ModalCenter';
+import ModalCenter from '../modals/ModalCenter';
 import ContentDelete from '../components/ContentDelete';
-import ModalFull from '../components/ModalFull';
+import PreChangePhone from '../modals/PreChangePhone';
+import ChangePhone from '../modals/ChangePhone';
+import PreChangeEmail from '../modals/PreChangeEmail';
+import ChangeEmail from '../modals/ChangeEmail';
+import ChangePassword from '../modals/ChangePassword';
 
 const data = [
   {
@@ -29,17 +32,22 @@ export default function Accounts() {
   const [userData] = data;
   const [allowAdd, setAllowAdd] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalPre, setModalPre] = React.useState(false);
+  const [modalPhone, setModalPhone] = React.useState(false);
+  const [preEmail, setPreEmail] = React.useState(false);
+  const [modalEmail, setModalEmail] = React.useState(false);
+  const [modalPassword, setModalPassword] = React.useState(false);
 
   const changeEmail = () => {
-    console.log('change ava');
+    setPreEmail(true);
   };
 
   const changePhone = () => {
-    console.log('change phone');
+    setModalPre(true);
   };
 
   const changePassword = () => {
-    console.log('change phone');
+    setModalPassword(true);
   };
 
   return (
@@ -48,10 +56,42 @@ export default function Accounts() {
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
 
       {/* modal to delete */}
-      <ModalFull
+      <ModalCenter
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         modalContent={<ContentDelete setModalOpen={setModalOpen} />}
+      />
+
+      {/* modal to change number */}
+      <PreChangePhone
+        modalOpen={modalPre}
+        setModalOpen={setModalPre}
+        setModalNext={setModalPhone}
+        phoneNumber={userData.phone}
+      />
+      <ChangePhone
+        modalOpen={modalPhone}
+        setModalOpen={setModalPhone}
+        setModalBefore={setModalPre}
+      />
+
+      {/* modal to change email */}
+      <PreChangeEmail
+        modalOpen={preEmail}
+        setModalOpen={setPreEmail}
+        setModalNext={setModalEmail}
+        emailAddress={userData.email}
+      />
+      <ChangeEmail
+        modalOpen={modalEmail}
+        setModalOpen={setModalEmail}
+        setModalBefore={setPreEmail}
+      />
+
+      {/* modal to change password */}
+      <ChangePassword
+        modalOpen={modalPassword}
+        setModalOpen={setModalPassword}
       />
 
       <View style={styles.header}>
@@ -71,7 +111,7 @@ export default function Accounts() {
           <Text style={styles.title}>Password</Text>
           <Text style={styles.subTitle}>Change Your Password</Text>
         </TouchableOpacity>
-        <View onPress={changePassword} style={styles.buttonCheckbox}>
+        <View style={styles.buttonCheckbox}>
           <View style={styles.textWrapper}>
             <Text style={styles.title}>Allow Others to Add by ID</Text>
             <Text numberOfLines={2} style={styles.subTitleCheckbox}>

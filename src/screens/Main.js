@@ -24,6 +24,10 @@ import ChatRoom from './ChatRoom';
 import Setting from './Setting';
 import Profile from './Profile';
 import Accounts from './Accounts';
+import Notifications from './Notifications';
+import Chats from './Chats';
+import Calls from './Calls';
+import Friends from './Friends';
 
 const Stack = createStackNavigator();
 
@@ -132,6 +136,26 @@ const ProfileStack = () => {
         options={{title: 'Account Screen'}}
         name="Account"
         component={Accounts}
+      />
+      <Stack.Screen
+        options={{title: 'Notification Screen'}}
+        name="Notifications"
+        component={Notifications}
+      />
+      <Stack.Screen
+        options={{title: 'Chat Setting Screen'}}
+        name="Chats"
+        component={Chats}
+      />
+      <Stack.Screen
+        options={{title: 'Calls Setting Screen'}}
+        name="Calls"
+        component={Calls}
+      />
+      <Stack.Screen
+        options={{title: 'Friends Setting Screen'}}
+        name="Friends"
+        component={Friends}
       />
     </Stack.Navigator>
   );

@@ -3,9 +3,9 @@ import {View, Text, StyleSheet, Modal} from 'react-native';
 import {Button} from 'native-base';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import FormFormat from './FormFormat';
+import FormFormat from '../components/FormFormat';
 
-export default function ModalCenter({
+export default function ModalFull({
   modalOpen,
   setModalOpen,
   submitForm = (values) => console.log(values),
