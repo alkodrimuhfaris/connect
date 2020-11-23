@@ -189,23 +189,25 @@ const apiChat = [
 function ChatList({item}) {
   const navigation = useNavigation();
   const {item: chatItem} = item;
-  let {id, name, avatar, lastChat, unreadChat, sendAt} = chatItem;
+  let {name, avatar, lastChat, unreadChat, sendAt} = chatItem;
 
   const goToRoomChat = () => {
     navigation.navigate('ChatRoom');
   };
 
   return (
-    <TouchableOpacity onPress={goToRoomChat} style={listStyles.parent}>
-      <View style={listStyles.imageWrapper}>
+    <View style={listStyles.parent}>
+      <TouchableOpacity onPress={goToRoomChat} style={listStyles.imageWrapper}>
         <Image
           source={{
             uri: avatar,
           }}
           style={listStyles.image}
         />
-      </View>
-      <View style={listStyles.contentWrapper}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={goToRoomChat}
+        style={listStyles.contentWrapper}>
         <View style={listStyles.headerWrapper}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={listStyles.name}>
             {name}
@@ -232,8 +234,8 @@ function ChatList({item}) {
             </View>
           ) : null}
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 }
 
@@ -307,7 +309,7 @@ const listStyles = StyleSheet.create({
 });
 
 export default function MainScreen() {
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
   const chatList = apiChat;
   const newChat = () => {
     console.log('create new chat');
