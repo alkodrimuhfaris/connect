@@ -131,7 +131,7 @@ const apiChat = [
     sendAt: '2020-11-18T11:13:40.000Z',
   },
   {
-    id: 1,
+    id: 7,
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
@@ -140,7 +140,7 @@ const apiChat = [
     sendAt: '2020-11-18T11:13:40.000Z',
   },
   {
-    id: 2,
+    id: 8,
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
@@ -149,7 +149,7 @@ const apiChat = [
     sendAt: '2020-11-18T11:13:40.000Z',
   },
   {
-    id: 3,
+    id: 9,
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
@@ -158,7 +158,7 @@ const apiChat = [
     sendAt: '2020-11-18T11:13:40.000Z',
   },
   {
-    id: 4,
+    id: 10,
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
@@ -167,7 +167,7 @@ const apiChat = [
     sendAt: '2020-11-18T11:13:40.000Z',
   },
   {
-    id: 5,
+    id: 11,
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
@@ -176,7 +176,7 @@ const apiChat = [
     sendAt: '2020-11-18T11:13:40.000Z',
   },
   {
-    id: 6,
+    id: 12,
     name: 'Syamsul Bahari',
     avatar:
       'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
