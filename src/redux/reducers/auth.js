@@ -1,6 +1,8 @@
 const initialState = {
   isLogin: false,
   token: '',
+  id: 0,
+  isCreated: false,
   isLoading: false,
   isError: false,
   alertMsg: '',
@@ -24,6 +26,7 @@ export default (state = initialState, action) => {
         isLogin: true,
         isError: false,
         token: action.payload.data.token,
+        user: action.payload.data.user,
         alertMsg: 'Login successfull',
       };
     }
@@ -33,6 +36,35 @@ export default (state = initialState, action) => {
         isLogin: false,
         isError: true,
         alertMsg: 'Login failed',
+      };
+    }
+    case 'SIGNUP_PENDING': {
+      console.log('login pending');
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+        alertMsg: 'Signing up ...',
+      };
+    }
+    case 'SIGNUP_FULFILLED': {
+      console.log('Signup fullfiled');
+      return {
+        ...state,
+        isLogin: true,
+        isError: false,
+        token: action.payload.data.token,
+        user: action.payload.data.user,
+        isCreated: action.payload.data.created,
+        alertMsg: action.payload.data.message,
+      };
+    }
+    case 'SIGNUP_REJECTED': {
+      return {
+        ...state,
+        isLogin: false,
+        isError: true,
+        alertMsg: 'Signup failed',
       };
     }
     case 'LOGOUT': {

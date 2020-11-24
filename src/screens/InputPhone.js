@@ -10,22 +10,41 @@ import {
 import {Entypo, AntDesign, MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import SafeAreaView from 'react-native-safe-area-view';
+import authAction from '../redux/actions/auth';
+import {useSelector, useDispatch} from 'react-redux';
 
 export default function LoginEmail() {
+  const dispatch = useDispatch();
   const [phone, setPhone] = React.useState();
   const [countryCode, setCountryCode] = React.useState('');
   const [countryName, setCountryName] = React.useState('Indonesia');
   const [openList, setOpenList] = React.useState(false);
   const navigation = useNavigation();
+  const {token, isCreated} = useSelector((state) => state.auth);
+  // const token = useSelector((state) => state.auth.token);
+  // const user = useSelector((state) => state.auth.user);
+  // const isCreated = useSelector((state) => state.auth.isCreated);
 
   const delPhone = () => {
     setPhone(null);
   };
 
   const goConfirm = () => {
-    navigation.navigate('ConfirmPhone', {phone});
-    console.log('go login');
+    dispatch(authAction.signup({phone}));
   };
+
+  React.useEffect(() => {
+    if (token && isCreated) {
+      console.log(token);
+      console.log(isCreated);
+      navigation.navigate('CreateNew');
+    } else if (token && !isCreated) {
+      console.log(token);
+      console.log(isCreated);
+      navigation.navigate('AlreadyHave');
+    }
+    console.log('go login');
+  }, [token, isCreated, navigation]);
 
   const goToTOC = () => {
     console.log('go to TOC');
