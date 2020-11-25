@@ -28,12 +28,16 @@ export default function ChatRoom({route}) {
   const [loading, setLoading] = React.useState(false);
   const {id} = route.params;
   const {token} = useSelector((state) => state.auth);
-  const {user} = useSelector((state) => state.auth);
-  const {
-    privateChat,
-    profileColluctor,
-    privateChatPageInfo: pageInfo,
-  } = useSelector((state) => state.chat);
+  const {id: myId} = useSelector((state) => state.auth);
+  const {profileColluctor, privateChatPageInfo: pageInfo} = useSelector(
+    (state) => state.chat,
+  );
+  const dataChat = useSelector((state) => state.chat.privateChat);
+  const [privateChat, setPrivateChat] = React.useState([]);
+
+  React.useEffect(() => {
+    setPrivateChat(dataChat);
+  }, [dataChat]);
 
   React.useEffect(() => {
     console.log(id);
@@ -105,7 +109,7 @@ export default function ChatRoom({route}) {
                 return (
                   <BubleChat
                     item={item}
-                    selfId={user.id}
+                    selfId={myId}
                     colluctorAva={profileColluctor.ava}
                   />
                 );

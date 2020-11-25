@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {Form, Input, Item} from 'native-base';
 import React from 'react';
 import {
@@ -10,92 +11,123 @@ import {
 import {Entypo, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import SafeAreaView from 'react-native-safe-area-view';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+import FormFormat from '../components/FormFormat';
+import passwordAction from '../redux/actions/password';
+import {useSelector, useDispatch} from 'react-redux';
 
 export default function CreatePassword() {
-  const [password, setPassword] = React.useState('');
-  const [confirmPassword, setConfirmPassword] = React.useState('');
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const {token} = useSelector((state) => state.auth);
+  const {isSuccess} = useSelector((state) => state.password);
+  const Schema = Yup.object().shape({
+    newPassword: Yup.mixed().required(),
+    confirmPassword: Yup.mixed()
+      .oneOf([Yup.ref('newPassword')], 'Password does not match')
+      .required('Required'),
+  });
 
-  const delPassword = () => {
-    setPassword('');
-  };
+  React.useEffect(() => {
+    if (isSuccess) {
+      navigation.navigate('AddFriends');
+    }
+  }, [isSuccess]);
 
-  const delConfirmPassword = () => {
-    setConfirmPassword('');
-  };
-
-  const goNext = () => {
-    navigation.navigate('AddFriends');
-    console.log(password);
-    console.log(confirmPassword);
-    console.log(
-      !(password && confirmPassword) && !(password === confirmPassword),
-    );
-    console.log('go next');
+  const submitting = (values) => {
+    console.log(values);
+    dispatch(passwordAction.addPassword(token, values));
   };
 
   return (
-    <SafeAreaView style={styles.parent}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
-      <View style={styles.top}>
-        <View style={styles.titleWrapper}>
-          <Text style={styles.title}>Create password</Text>
-        </View>
+    <Formik
+      initialValues={{newPassword: '', confirmPassword: ''}}
+      validationSchema={Schema}
+      onSubmit={(values) => submitting(values)}>
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        setFieldValue,
+        errors,
+        touched,
+        values,
+      }) => {
+        const {
+          newPassword: newPasswordVal,
+          confirmPassword: confirmPasswordVal,
+        } = values;
+        const {
+          newPassword: newPasswordTouch,
+          confirmPassword: confirmPasswordTouch,
+        } = touched;
+        const {
+          newPassword: newPasswordErr,
+          confirmPassword: confirmPasswordErr,
+        } = errors;
+        return (
+          <SafeAreaView style={styles.parent}>
+            <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
+            <View style={styles.top}>
+              <View style={styles.titleWrapper}>
+                <Text style={styles.title}>Create password</Text>
+              </View>
 
-        <View style={styles.txtWrapper}>
-          <Text style={styles.txt}>
-            Use at least one letter, one number, and four other characters.
-          </Text>
-        </View>
+              <View style={styles.txtWrapper}>
+                <Text style={styles.txt}>
+                  Use at least one letter, one number, and four other
+                  characters.
+                </Text>
+              </View>
 
-        <Form style={styles.form}>
-          <Item style={password ? styles.itemEnter : null}>
-            <Input
-              placeholder="Password"
-              secureTextEntry
-              value={password}
-              style={styles.input}
-              onChangeText={(e) => setPassword(e)}
-            />
-            {password ? (
-              <TouchableOpacity onPress={delPassword}>
-                <Entypo name="cross" size={20} color="black" />
+              <FormFormat
+                inputName="newPassword"
+                placeholder="Password"
+                value={newPasswordVal}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+                touched={newPasswordTouch}
+                error={newPasswordErr}
+                secureEntry={true}
+              />
+              <FormFormat
+                inputName="confirmPassword"
+                placeholder="Confirm Password"
+                value={confirmPasswordVal}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+                touched={confirmPasswordTouch}
+                error={confirmPasswordErr}
+                secureEntry={true}
+              />
+            </View>
+
+            <View style={styles.bottom}>
+              <TouchableOpacity
+                disabled={
+                  (!newPasswordVal || Boolean(newPasswordErr)) &&
+                  (!confirmPasswordVal || Boolean(confirmPasswordErr))
+                }
+                onPress={handleSubmit}
+                style={[
+                  styles.btn,
+                  newPasswordVal &&
+                  !newPasswordErr &&
+                  confirmPasswordVal &&
+                  !confirmPasswordErr
+                    ? styles.btnActive
+                    : null,
+                ]}>
+                <AntDesign name="arrowright" size={25} color="white" />
               </TouchableOpacity>
-            ) : null}
-          </Item>
-          <Item style={confirmPassword ? styles.itemEnter : null}>
-            <Input
-              placeholder="Confirm password"
-              secureTextEntry
-              value={confirmPassword}
-              style={styles.input}
-              onChangeText={(e) => setConfirmPassword(e)}
-            />
-            {confirmPassword ? (
-              <TouchableOpacity onPress={delConfirmPassword}>
-                <Entypo name="cross" size={20} color="black" />
-              </TouchableOpacity>
-            ) : null}
-          </Item>
-        </Form>
-      </View>
-
-      <View style={styles.bottom}>
-        <TouchableOpacity
-          disabled={
-            !(password && confirmPassword) || !(password === confirmPassword)
-          }
-          onPress={goNext}
-          style={[
-            styles.btn,
-            !(password && confirmPassword) || !(password === confirmPassword)
-              ? null
-              : styles.btnActive,
-          ]}>
-          <AntDesign name="arrowright" size={25} color="white" />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+            </View>
+          </SafeAreaView>
+        );
+      }}
+    </Formik>
   );
 }
 

@@ -4,14 +4,20 @@ import {Button} from 'native-base';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import FormFormat from '../components/FormFormat';
+import {useSelector} from 'react-redux';
 
-export default function ChangeName({modalOpen, setModalOpen}) {
-  const SignupSchema = Yup.object().shape({
+export default function ChangeName({modalOpen, setModalOpen, updateProfile}) {
+  const {isError, myProfile} = useSelector((state) => state.profile);
+  const Schema = Yup.object().shape({
     name: Yup.string().required().max(20),
   });
 
   const submitting = (values) => {
     console.log(values);
+    updateProfile(values);
+    if (!isError) {
+      setModalOpen(false);
+    }
   };
 
   return (
@@ -21,8 +27,8 @@ export default function ChangeName({modalOpen, setModalOpen}) {
       transparent={true}
       visible={modalOpen}>
       <Formik
-        initialValues={{name: ''}}
-        validationSchema={SignupSchema}
+        initialValues={{name: myProfile.name ? myProfile.name : ''}}
+        validationSchema={Schema}
         onSubmit={(values) => submitting(values)}>
         {({
           handleChange,

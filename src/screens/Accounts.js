@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {
   TouchableOpacity,
@@ -15,28 +16,35 @@ import ChangePhone from '../modals/ChangePhone';
 import PreChangeEmail from '../modals/PreChangeEmail';
 import ChangeEmail from '../modals/ChangeEmail';
 import ChangePassword from '../modals/ChangePassword';
-
-const data = [
-  {
-    name: 'Syamsul Bahari',
-    avatar:
-      'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
-    idName: 'syamsulbahari',
-    phone: '089633449007',
-    status: 'On my Way',
-    email: 'farisalkodri@gmail.com',
-  },
-];
+import AddPassword from '../modals/AddPassword';
+import {useSelector, useDispatch} from 'react-redux';
+import profileAction from '../redux/actions/profile';
+import passwordAction from '../redux/actions/password';
 
 export default function Accounts() {
-  const [userData] = data;
+  const userData = useSelector((state) => state.profile.myProfile);
+  const {token} = useSelector((state) => state.auth);
+  const {isPasswordExist} = useSelector((state) => state.password);
+  const dispatch = useDispatch();
   const [allowAdd, setAllowAdd] = React.useState(false);
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [openModalDel, setOpenModalDel] = React.useState(false);
   const [modalPre, setModalPre] = React.useState(false);
   const [modalPhone, setModalPhone] = React.useState(false);
   const [preEmail, setPreEmail] = React.useState(false);
   const [modalEmail, setModalEmail] = React.useState(false);
   const [modalPassword, setModalPassword] = React.useState(false);
+
+  React.useEffect(() => {
+    dispatch(passwordAction.checkPassword(token));
+  }, []);
+
+  React.useEffect(() => {
+    dispatch(passwordAction.checkPassword(token));
+  }, [modalPassword]);
+
+  const updateProfile = (data) => {
+    dispatch(profileAction.patchProfile(token, data));
+  };
 
   const changeEmail = () => {
     setPreEmail(true);
@@ -57,9 +65,9 @@ export default function Accounts() {
 
       {/* modal to delete */}
       <ModalCenter
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        modalContent={<ContentDelete setModalOpen={setModalOpen} />}
+        modalOpen={openModalDel}
+        setModalOpen={setOpenModalDel}
+        modalContent={<ContentDelete setModalOpen={setOpenModalDel} />}
       />
 
       {/* modal to change number */}
@@ -73,6 +81,7 @@ export default function Accounts() {
         modalOpen={modalPhone}
         setModalOpen={setModalPhone}
         setModalBefore={setModalPre}
+        updateProfile={updateProfile}
       />
 
       {/* modal to change email */}
@@ -86,13 +95,21 @@ export default function Accounts() {
         modalOpen={modalEmail}
         setModalOpen={setModalEmail}
         setModalBefore={setPreEmail}
+        updateProfile={updateProfile}
       />
 
       {/* modal to change password */}
-      <ChangePassword
-        modalOpen={modalPassword}
-        setModalOpen={setModalPassword}
-      />
+      {isPasswordExist ? (
+        <ChangePassword
+          modalOpen={modalPassword}
+          setModalOpen={setModalPassword}
+        />
+      ) : (
+        <AddPassword
+          modalOpen={modalPassword}
+          setModalOpen={setModalPassword}
+        />
+      )}
 
       <View style={styles.header}>
         <Text style={styles.headerTxt}>Account</Text>
@@ -127,7 +144,7 @@ export default function Accounts() {
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => setModalOpen(true)}
+          onPress={() => setOpenModalDel(true)}
           style={styles.buttonWrapper}>
           <Text style={styles.title}>Delete My Account</Text>
         </TouchableOpacity>

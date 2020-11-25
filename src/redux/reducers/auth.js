@@ -1,11 +1,12 @@
 const initialState = {
   isLogin: false,
   token: '',
-  id: 0,
+  id: null,
   isCreated: false,
   isLoading: false,
   isError: false,
   alertMsg: '',
+  authState: true,
 };
 
 export default (state = initialState, action) => {
@@ -26,7 +27,7 @@ export default (state = initialState, action) => {
         isLogin: true,
         isError: false,
         token: action.payload.data.token,
-        user: action.payload.data.user,
+        id: action.payload.data.user.id,
         alertMsg: 'Login successfull',
       };
     }
@@ -54,7 +55,7 @@ export default (state = initialState, action) => {
         isLogin: true,
         isError: false,
         token: action.payload.data.token,
-        user: action.payload.data.user,
+        id: action.payload.data.user.id,
         isCreated: action.payload.data.created,
         alertMsg: action.payload.data.message,
       };
@@ -73,7 +74,15 @@ export default (state = initialState, action) => {
         isLogin: false,
         isError: false,
         token: '',
+        id: null,
+        authState: true,
         alertMsg: 'Logout successfull',
+      };
+    }
+    case 'IN_MAIN_SCREEN': {
+      return {
+        ...state,
+        authState: false,
       };
     }
     default: {

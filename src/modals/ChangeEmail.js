@@ -4,16 +4,26 @@ import {Button} from 'native-base';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import FormFormat from '../components/FormFormat';
+import {useSelector} from 'react-redux';
 
-export default function ChangeEmail({modalOpen, setModalOpen, setModalBefore}) {
+export default function ChangeEmail({
+  modalOpen,
+  setModalOpen,
+  setModalBefore,
+  updateProfile,
+}) {
+  const {isError, myProfile} = useSelector((state) => state.profile);
   const Schema = Yup.object().shape({
     email: Yup.string().email().required(),
   });
 
   const submitting = (values) => {
     console.log(values);
-    setModalBefore(false);
-    setModalOpen(false);
+    updateProfile(values);
+    if (!isError) {
+      setModalBefore(false);
+      setModalOpen(false);
+    }
   };
 
   return (
@@ -23,7 +33,7 @@ export default function ChangeEmail({modalOpen, setModalOpen, setModalBefore}) {
       transparent={true}
       visible={modalOpen}>
       <Formik
-        initialValues={{email: null}}
+        initialValues={{email: myProfile.email ? myProfile.email : ''}}
         validationSchema={Schema}
         onSubmit={(values) => submitting(values)}>
         {({

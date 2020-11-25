@@ -4,16 +4,26 @@ import {Button} from 'native-base';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import FormFormat from '../components/FormFormat';
+import {useSelector} from 'react-redux';
 
-export default function ChangePhone({modalOpen, setModalOpen, setModalBefore}) {
+export default function ChangePhone({
+  modalOpen,
+  setModalOpen,
+  setModalBefore,
+  updateProfile,
+}) {
+  const {isError, myProfile} = useSelector((state) => state.profile);
   const Schema = Yup.object().shape({
     phone: Yup.number().required(),
   });
 
   const submitting = (values) => {
     console.log(values);
-    setModalBefore(false);
-    setModalOpen(false);
+    updateProfile(values);
+    if (!isError) {
+      setModalBefore(false);
+      setModalOpen(false);
+    }
   };
 
   const goToTOC = () => {
@@ -31,7 +41,7 @@ export default function ChangePhone({modalOpen, setModalOpen, setModalBefore}) {
       transparent={true}
       visible={modalOpen}>
       <Formik
-        initialValues={{phone: null}}
+        initialValues={{phone: myProfile.phone}}
         validationSchema={Schema}
         onSubmit={(values) => submitting(values)}>
         {({

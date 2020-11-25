@@ -4,7 +4,7 @@ import qs from 'qs';
 export default {
   login: ({email, password}) => ({
     type: 'LOGIN',
-    payload: services().post('auth/login', qs.stringify(email, password)),
+    payload: services().post('auth/login', qs.stringify({email, password})),
   }),
   signup: ({phone}) => ({
     type: 'SIGNUP',
@@ -12,6 +12,9 @@ export default {
   }),
   logout: () => ({
     type: 'LOGOUT',
+  }),
+  inMainScreen: () => ({
+    type: 'IN_MAIN_SCREEN',
   }),
   setToken: (payload) => ({
     type: 'SET_TOKEN',

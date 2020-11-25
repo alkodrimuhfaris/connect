@@ -4,14 +4,20 @@ import {Button} from 'native-base';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import FormFormat from '../components/FormFormat';
+import {useSelector} from 'react-redux';
 
-export default function ChangeUserID({modalOpen, setModalOpen}) {
+export default function ChangeUserID({modalOpen, setModalOpen, updateProfile}) {
+  const {isError} = useSelector((state) => state.profile);
   const SignupSchema = Yup.object().shape({
-    userID: Yup.string().required().max(20),
+    idName: Yup.string().required().max(20),
   });
 
   const submitting = (values) => {
     console.log(values);
+    updateProfile(values);
+    if (!isError) {
+      setModalOpen(false);
+    }
   };
 
   return (
@@ -21,7 +27,7 @@ export default function ChangeUserID({modalOpen, setModalOpen}) {
       transparent={true}
       visible={modalOpen}>
       <Formik
-        initialValues={{userID: ''}}
+        initialValues={{idName: ''}}
         validationSchema={SignupSchema}
         onSubmit={(values) => submitting(values)}>
         {({
@@ -33,9 +39,9 @@ export default function ChangeUserID({modalOpen, setModalOpen}) {
           touched,
           values,
         }) => {
-          const {userID: userIDVal} = values;
-          const {userID: userIDTouch} = touched;
-          const {userID: userIDErr} = errors;
+          const {idName: idNameVal} = values;
+          const {idName: idNameTouch} = touched;
+          const {idName: idNameErr} = errors;
           return (
             <View style={modalStyle.parent}>
               <View style={modalStyle.header}>
@@ -43,14 +49,14 @@ export default function ChangeUserID({modalOpen, setModalOpen}) {
               </View>
               <View style={modalStyle.formWrapper}>
                 <FormFormat
-                  inputName="userID"
+                  inputName="idName"
                   placeholder="User ID"
-                  value={userIDVal}
+                  value={idNameVal}
                   handleBlur={handleBlur}
                   handleChange={handleChange}
                   setFieldValue={setFieldValue}
-                  touched={userIDTouch}
-                  error={userIDErr}
+                  touched={idNameTouch}
+                  error={idNameErr}
                   textCounter={true}
                   maxLength={20}
                 />
@@ -58,11 +64,11 @@ export default function ChangeUserID({modalOpen, setModalOpen}) {
               <Button
                 style={[
                   modalStyle.btn,
-                  userIDVal && !userIDErr
+                  idNameVal && !idNameErr
                     ? modalStyle.active
                     : modalStyle.inactive,
                 ]}
-                disabled={!userIDVal || Boolean(userIDErr)}
+                disabled={!idNameVal || Boolean(idNameErr)}
                 onPress={handleSubmit}
                 title="Submit">
                 <Text style={modalStyle.btnTxt}>OK</Text>

@@ -12,26 +12,34 @@ import {Entypo} from '@expo/vector-icons';
 import ModalChangeName from '../modals/ChangeName';
 import ModalChangeStatus from '../modals/ChangeStatus';
 import ModalChangeUserID from '../modals/ChangeUserID';
+import {useSelector, useDispatch} from 'react-redux';
+import authAction from '../redux/actions/auth';
+import profileAction from '../redux/actions/profile';
+import placeholder from '../assets/photos/profilePlaceholder.png';
+import ModalCenter from '../modals/ModalCenter';
+import ContentSelector from '../components/ContentSelector';
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 
-const data = [
-  {
-    name: 'Syamsul Bahari',
-    avatar:
-      'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
-    idName: 'syamsulbahari',
-    phone: '089633449007',
-    status: 'On my Way',
-  },
-];
+const {EXPO_API_URL} = process.env;
 
 export default function Profile() {
-  const [userData] = data;
+  const userData = useSelector((state) => state.profile.myProfile);
+  const {token} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [modalName, setModalName] = React.useState(false);
   const [modalStatus, setModalStatus] = React.useState(false);
   const [modalID, setModalID] = React.useState(false);
+  const [modalOption, setModalOption] = React.useState(false);
+  const [avatar, setAvatar] = React.useState('');
 
   const changeAva = () => {
-    console.log('change ava');
+    setModalOption(true);
+  };
+
+  const updateProfile = (data) => {
+    console.log(data);
+    dispatch(profileAction.patchProfile(token, data));
   };
 
   const changePhone = () => {
@@ -39,7 +47,9 @@ export default function Profile() {
   };
 
   const changeID = () => {
-    setModalID(true);
+    if (!userData.idName) {
+      setModalID(true);
+    }
   };
 
   const changeName = () => {
@@ -50,27 +60,91 @@ export default function Profile() {
     setModalStatus(true);
   };
 
+  const selectOption = ['Open Galery', 'Open Camera'];
+
+  const uploadData = new FormData();
+
+  const selectAction = async (index) => {
+    if (index === 0) {
+      console.log('open galery');
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+      console.log(result);
+      if (!result.cancelled) {
+        if (result.type === 'image') {
+          const manipResult = await ImageManipulator.manipulateAsync(
+            result.uri,
+            [],
+            {compress: 0.4},
+          );
+          uploadData.append('avatar', result.uri);
+          console.log(uploadData);
+          updateProfile(uploadData);
+          setAvatar(manipResult.uri);
+        } else {
+          alert('file must be image!');
+        }
+      }
+      setModalOption(false);
+    } else if (index === 1) {
+      console.log('open camera');
+      setModalOption(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.parent}>
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
 
       {/* modal change name */}
-      <ModalChangeName modalOpen={modalName} setModalOpen={setModalName} />
+      <ModalChangeName
+        modalOpen={modalName}
+        setModalOpen={setModalName}
+        updateProfile={updateProfile}
+      />
 
       {/* modal change status */}
       <ModalChangeStatus
         modalOpen={modalStatus}
         setModalOpen={setModalStatus}
+        updateProfile={updateProfile}
       />
 
-      <ModalChangeUserID modalOpen={modalID} setModalOpen={setModalID} />
+      {/* modal change user ID */}
+      <ModalChangeUserID
+        modalOpen={modalID}
+        setModalOpen={setModalID}
+        updateProfile={updateProfile}
+      />
+
+      {/* select camera or gallery */}
+      <ModalCenter
+        modalOpen={modalOption}
+        setModalOpen={setModalOption}
+        modalContent={
+          <ContentSelector sortOption={selectOption} setOption={selectAction} />
+        }
+      />
 
       <View style={styles.header}>
         <Text style={styles.headerTxt}>Profile</Text>
       </View>
       <View style={styles.photoWrapper}>
         <TouchableOpacity onPress={changeAva} style={styles.avatarWrapper}>
-          <Image source={{uri: userData.avatar}} style={styles.avatar} />
+          <Image
+            source={
+              avatar
+                ? {uri: avatar}
+                : userData.ava
+                ? {uri: EXPO_API_URL + userData.ava}
+                : placeholder
+            }
+            style={styles.avatar}
+          />
           <View style={styles.iconWrapper}>
             <Entypo name="camera" size={15} color="black" />
           </View>
@@ -83,7 +157,13 @@ export default function Profile() {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity onPress={changeName} style={styles.buttonWrapper}>
           <Text style={styles.title}>Display Name</Text>
-          <Text style={styles.displayName}>{userData.name}</Text>
+          <Text
+            style={[
+              styles.displayName,
+              !userData.name ? styles.notSetTxt : null,
+            ]}>
+            {userData.name ? userData.name : 'Not Set'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={changeStatus} style={styles.buttonWrapper}>
           <Text style={styles.title}>Status Message</Text>
@@ -91,7 +171,10 @@ export default function Profile() {
         </TouchableOpacity>
         <TouchableOpacity onPress={changeID} style={styles.buttonWrapper}>
           <Text style={styles.title}>User ID</Text>
-          <Text style={styles.userID}>{userData.idName}</Text>
+          <Text
+            style={[styles.userID, !userData.idName ? styles.notSetID : null]}>
+            {userData.idName ? userData.idName : 'set your ID'}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -130,7 +213,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   avatar: {
-    width: '100%',
+    width: 80,
+    height: 80,
     borderRadius: 300,
     aspectRatio: 1 / 1,
   },
@@ -180,6 +264,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#02075D',
   },
+  notSetTxt: {
+    color: '#999',
+  },
   statusMessage: {
     fontSize: 12,
     color: '#999',
@@ -187,5 +274,8 @@ const styles = StyleSheet.create({
   userID: {
     fontSize: 12,
     color: '#999',
+  },
+  notSetID: {
+    color: '#02075D',
   },
 });

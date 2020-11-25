@@ -7,12 +7,11 @@ import FormFormat from '../components/FormFormat';
 import passwordAction from '../redux/actions/password';
 import {useSelector, useDispatch} from 'react-redux';
 
-export default function ChangePassword({modalOpen, setModalOpen}) {
+export default function AddPassword({modalOpen, setModalOpen}) {
   const dispatch = useDispatch();
   const {token} = useSelector((state) => state.auth);
   const {isSuccess} = useSelector((state) => state.password);
   const Schema = Yup.object().shape({
-    oldPassword: Yup.mixed().required(),
     newPassword: Yup.mixed().required(),
     confirmPassword: Yup.mixed()
       .oneOf([Yup.ref('newPassword')], 'Password does not match')
@@ -21,7 +20,7 @@ export default function ChangePassword({modalOpen, setModalOpen}) {
 
   const submitting = (values) => {
     console.log(values);
-    dispatch(passwordAction.updatePassword(token, values));
+    dispatch(passwordAction.addPassword(token, values));
     if (isSuccess) {
       setModalOpen(false);
     }
@@ -34,7 +33,7 @@ export default function ChangePassword({modalOpen, setModalOpen}) {
       transparent={true}
       visible={modalOpen}>
       <Formik
-        initialValues={{oldPassword: '', newPassword: '', confirmPassword: ''}}
+        initialValues={{newPassword: '', confirmPassword: ''}}
         validationSchema={Schema}
         onSubmit={(values) => submitting(values)}>
         {({
@@ -47,17 +46,14 @@ export default function ChangePassword({modalOpen, setModalOpen}) {
           values,
         }) => {
           const {
-            oldPassword: oldPasswordVal,
             newPassword: newPasswordVal,
             confirmPassword: confirmPasswordVal,
           } = values;
           const {
-            oldPassword: oldPasswordTouch,
             newPassword: newPasswordTouch,
             confirmPassword: confirmPasswordTouch,
           } = touched;
           const {
-            oldPassword: oldPasswordErr,
             newPassword: newPasswordErr,
             confirmPassword: confirmPasswordErr,
           } = errors;
@@ -65,26 +61,10 @@ export default function ChangePassword({modalOpen, setModalOpen}) {
             <View style={modalStyle.parent}>
               <ScrollView>
                 <View style={modalStyle.header}>
-                  <Text style={modalStyle.headerTxt}>Change Password</Text>
+                  <Text style={modalStyle.headerTxt}>Add Password</Text>
                 </View>
 
                 <View style={modalStyle.formWrapper}>
-                  <View style={modalStyle.oldPass}>
-                    <Text style={modalStyle.text}>
-                      Input your current password
-                    </Text>
-                    <FormFormat
-                      inputName="oldPassword"
-                      placeholder="Current Password"
-                      value={oldPasswordVal}
-                      handleBlur={handleBlur}
-                      handleChange={handleChange}
-                      setFieldValue={setFieldValue}
-                      touched={oldPasswordTouch}
-                      error={oldPasswordErr}
-                      secureEntry={true}
-                    />
-                  </View>
                   <View style={modalStyle.newPass}>
                     <Text style={modalStyle.text}>Input your new password</Text>
                     <FormFormat
@@ -115,8 +95,6 @@ export default function ChangePassword({modalOpen, setModalOpen}) {
               <Button
                 style={[
                   modalStyle.btn,
-                  oldPasswordVal &&
-                  !oldPasswordErr &&
                   newPasswordVal &&
                   !newPasswordErr &&
                   confirmPasswordVal &&
@@ -125,7 +103,6 @@ export default function ChangePassword({modalOpen, setModalOpen}) {
                     : modalStyle.inactive,
                 ]}
                 disabled={
-                  (!oldPasswordVal || Boolean(oldPasswordErr)) &&
                   (!newPasswordVal || Boolean(newPasswordErr)) &&
                   (!confirmPasswordVal || Boolean(confirmPasswordErr))
                 }

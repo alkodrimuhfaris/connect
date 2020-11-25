@@ -162,6 +162,9 @@ const ProfileStack = () => {
 };
 
 class Main extends Component {
+  componentDidMount() {
+    console.log(this.props.auth.token);
+  }
   render() {
     return (
       <NavigationContainer>
@@ -169,7 +172,9 @@ class Main extends Component {
           screenOptions={{
             headerShown: false,
           }}>
-          <Stack.Screen name="AuthStack" component={AuthStack} />
+          {this.props.auth.authState ? (
+            <Stack.Screen name="AuthStack" component={AuthStack} />
+          ) : null}
           <Stack.Screen name="MainStack" component={MainStack} />
           <Stack.Screen name="ProfileStack" component={ProfileStack} />
         </Stack.Navigator>

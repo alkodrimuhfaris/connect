@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {
@@ -11,15 +12,12 @@ import {
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import {Ionicons} from '@expo/vector-icons';
+import {useSelector, useDispatch} from 'react-redux';
+import profileAction from '../redux/actions/profile';
+import authAction from '../redux/actions/auth';
+import placeholder from '../assets/photos/profilePlaceholder.png';
 
-const data = [
-  {
-    name: 'Syamsul Bahari',
-    avatar:
-      'https://cdn-2.tstatic.net/cirebon/foto/bank/images/spiderman-homecoming.jpg',
-    idName: 'syamsulbahari',
-  },
-];
+const {EXPO_API_URL} = process.env;
 
 const settingData = [
   {
@@ -52,14 +50,29 @@ const settingData = [
     icon: 'ios-people',
     navigate: 'Friends',
   },
+  {
+    title: 'Log Out',
+    icon: 'ios-log-out',
+    logout: true,
+    navigate: 'AuthStack',
+  },
 ];
 
 function SelectorSetting({item}) {
+  const dispatch = useDispatch();
+  const authState = useSelector((state) => state.auth.authState);
   const {item: selectorData} = item;
-  const {title, icon, navigate} = selectorData;
+  const {title, icon, navigate, logout} = selectorData;
   const navigation = useNavigation();
+
   const goToScreen = () => {
-    navigation.navigate(navigate);
+    if (logout) {
+      dispatch(authAction.logout());
+      dispatch(profileAction.logout());
+      navigation.navigate(navigate);
+    } else {
+      navigation.navigate(navigate);
+    }
   };
   return (
     <TouchableOpacity onPress={goToScreen} style={selector.parent}>
@@ -95,8 +108,14 @@ const selector = StyleSheet.create({
 
 export default function Setting() {
   const navigation = useNavigation();
-  const [userData] = data;
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.profile.myProfile);
+  const {token, id: myId} = useSelector((state) => state.auth);
   const settingItem = settingData;
+
+  React.useEffect(() => {
+    dispatch(profileAction.getProfile(token));
+  }, []);
 
   const goToProfile = () => {
     navigation.navigate('Profile');
@@ -107,13 +126,22 @@ export default function Setting() {
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
       <TouchableOpacity onPress={goToProfile} style={styles.photoWrapper}>
         <View style={styles.avatarWrapper}>
-          <Image source={{uri: userData.avatar}} style={styles.avatar} />
+          <Image
+            source={
+              userData.ava ? {uri: EXPO_API_URL + userData.ava} : placeholder
+            }
+            style={styles.avatar}
+          />
         </View>
         <View style={styles.nameWrapper}>
-          <Text style={styles.name}>{userData.name}</Text>
+          <Text style={styles.name}>
+            {userData.name ? userData.name : 'Not Set'}
+          </Text>
           <View style={styles.idNameWrapper}>
             <Text style={styles.idNameKey}>User ID: </Text>
-            <Text style={styles.idNameVal}>{userData.idName}</Text>
+            <Text style={styles.idNameVal}>
+              {userData.idName ? userData.idName : 'Not Set'}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -149,7 +177,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   avatar: {
-    width: '100%',
+    width: 80,
+    height: 80,
     borderRadius: 300,
     aspectRatio: 1 / 1,
   },

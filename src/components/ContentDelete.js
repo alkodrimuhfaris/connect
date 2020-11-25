@@ -6,14 +6,30 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+import profileAction from '../redux/actions/profile';
+import authAction from '../redux/actions/auth';
+import {useNavigation} from '@react-navigation/native';
 
 export default function ContentDelete({setModalOpen}) {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const {token, isLogin} = useSelector((state) => state.auth);
+
+  React.useEffect(() => {
+    if (!isLogin) {
+      setModalOpen(false);
+      navigation.navigate('AuthStack');
+    }
+  }, [isLogin, navigation, setModalOpen]);
+
   const cancel = () => {
     setModalOpen(false);
   };
 
   const proceed = () => {
-    setModalOpen(false);
+    dispatch(profileAction.deleteAccount(token));
+    dispatch(authAction.logout);
   };
 
   return (

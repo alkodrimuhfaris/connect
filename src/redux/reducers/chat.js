@@ -141,6 +141,7 @@ export default (state = initialState, action) => {
         ...state,
         isLogin: true,
         isError: false,
+        privateChat: [action.payload.data.sendChat, ...state.privateChat],
         alertMsg: 'Chat sent successfull',
       };
     }

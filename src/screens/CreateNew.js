@@ -1,4 +1,4 @@
-import {Form, Input, Item, Label} from 'native-base';
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {
   View,
@@ -12,73 +12,132 @@ import {Entypo, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import SafeAreaView from 'react-native-safe-area-view';
 import picturePlaceholder from '../assets/photos/profilePlaceholder.png';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+import FormFormat from '../components/FormFormat';
+import profileAction from '../redux/actions/profile';
+import {useSelector, useDispatch} from 'react-redux';
+import ModalCenter from '../modals/ModalCenter';
+import ContentSelector from '../components/ContentSelector';
 
 export default function CreateNew() {
-  const [name, setName] = React.useState('');
+  const dispatch = useDispatch();
+  const {isEdited} = useSelector((state) => state.profile);
+  const {token} = useSelector((state) => state.auth);
   const [avatar, setAvatar] = React.useState('');
+  const [modalOption, setModalOption] = React.useState(false);
   const navigation = useNavigation();
+  const Schema = Yup.object().shape({
+    name: Yup.string().required().max(20),
+  });
 
-  const delName = () => {
-    setName('');
+  React.useEffect(() => {
+    if (isEdited) {
+      navigation.navigate('CreatePassword');
+      console.log('go next');
+    }
+  }, [isEdited]);
+
+  const submitting = (values) => {
+    console.log(values);
+    dispatch(profileAction.patchProfile(token, values));
   };
 
-  const goNext = () => {
-    navigation.navigate('CreatePassword');
-    console.log('go next');
+  const selectOption = ['Open Galery', 'Open Camera'];
+
+  const selectAction = (index) => {
+    if (index === 0) {
+      console.log('open galery');
+      setModalOption(false);
+    } else if (index === 1) {
+      console.log('open camera');
+      setModalOption(false);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.parent}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
-      <View style={styles.top}>
-        <View style={styles.titleWrapper}>
-          <Text style={styles.title}>Create a new account</Text>
-        </View>
-
-        <View style={styles.txtWrapper}>
-          <Text style={styles.txt}>
-            Other people on CONNECT can see your display nameand profile media
-          </Text>
-        </View>
-
-        <View style={styles.photoContainer}>
-          <TouchableOpacity style={styles.photoWrapper}>
-            <Image
-              source={avatar ? picturePlaceholder : picturePlaceholder}
-              style={styles.photo}
+    <Formik
+      initialValues={{name: ''}}
+      validationSchema={Schema}
+      onSubmit={(values) => submitting(values)}>
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        setFieldValue,
+        errors,
+        touched,
+        values,
+      }) => {
+        const {name: nameVal} = values;
+        const {name: nameTouch} = touched;
+        const {name: nameErr} = errors;
+        return (
+          <SafeAreaView style={styles.parent}>
+            {/* select camera or gallery */}
+            <ModalCenter
+              modalOpen={modalOption}
+              setModalOpen={setModalOption}
+              modalContent={
+                <ContentSelector
+                  sortOption={selectOption}
+                  setOption={selectAction}
+                />
+              }
             />
-            <View style={styles.iconWrapper}>
-              <Entypo name="camera" size={10} color="black" />
+            <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
+            <View style={styles.top}>
+              <View style={styles.titleWrapper}>
+                <Text style={styles.title}>Create a new account</Text>
+              </View>
+
+              <View style={styles.txtWrapper}>
+                <Text style={styles.txt}>
+                  Other people on CONNECT can see your display nameand profile
+                  media
+                </Text>
+              </View>
+
+              <View style={styles.photoContainer}>
+                <TouchableOpacity
+                  onPress={() => setModalOption(true)}
+                  style={styles.photoWrapper}>
+                  <Image
+                    source={avatar ? picturePlaceholder : picturePlaceholder}
+                    style={styles.photo}
+                  />
+                  <View style={styles.iconWrapper}>
+                    <Entypo name="camera" size={10} color="black" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <FormFormat
+                inputName="name"
+                placeholder="Name"
+                value={nameVal}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+                touched={nameTouch}
+                error={nameErr}
+                textCounter={true}
+                maxLength={20}
+              />
             </View>
-          </TouchableOpacity>
-        </View>
 
-        <Form style={styles.form}>
-          <Item style={name ? styles.itemEnter : null}>
-            <Input
-              placeholder="What's your name?"
-              value={name}
-              style={styles.input}
-              onChangeText={(e) => setName(e)}
-            />
-            {name ? (
-              <TouchableOpacity onPress={delName}>
-                <Entypo name="cross" size={20} color="black" />
+            <View style={styles.bottom}>
+              <TouchableOpacity
+                disabled={!nameVal}
+                onPress={handleSubmit}
+                style={[styles.btn, nameVal ? styles.btnActive : null]}>
+                <AntDesign name="arrowright" size={25} color="white" />
               </TouchableOpacity>
-            ) : null}
-          </Item>
-        </Form>
-      </View>
-
-      <View style={styles.bottom}>
-        <TouchableOpacity
-          disabled={!name}
-          onPress={goNext}
-          style={[styles.btn, name ? styles.btnActive : null]}>
-          <AntDesign name="arrowright" size={25} color="white" />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+            </View>
+          </SafeAreaView>
+        );
+      }}
+    </Formik>
   );
 }
 
@@ -100,6 +159,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
+  },
+  formWrapper: {
+    marginTop: 20,
+    marginBottom: 40,
   },
   txtWrapper: {
     marginVertical: 10,

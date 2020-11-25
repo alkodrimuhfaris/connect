@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {Entypo, AntDesign, MaterialCommunityIcons} from '@expo/vector-icons';
+import {Entypo, AntDesign} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import SafeAreaView from 'react-native-safe-area-view';
 import authAction from '../redux/actions/auth';
@@ -21,9 +21,6 @@ export default function LoginEmail() {
   const [openList, setOpenList] = React.useState(false);
   const navigation = useNavigation();
   const {token, isCreated} = useSelector((state) => state.auth);
-  // const token = useSelector((state) => state.auth.token);
-  // const user = useSelector((state) => state.auth.user);
-  // const isCreated = useSelector((state) => state.auth.isCreated);
 
   const delPhone = () => {
     setPhone(null);

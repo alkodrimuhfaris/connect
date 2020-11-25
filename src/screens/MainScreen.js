@@ -11,6 +11,7 @@ import {Feather} from '@expo/vector-icons';
 import SafeAreaView from 'react-native-safe-area-view';
 import {useSelector, useDispatch} from 'react-redux';
 import chatAction from '../redux/actions/chat';
+import authAction from '../redux/actions/auth';
 import Header from '../components/HeaderHome';
 import ChatList from '../components/ChatList';
 
@@ -20,11 +21,14 @@ export default function MainScreen() {
   );
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
-  const {token} = useSelector((state) => state.auth);
+  const {token, authState} = useSelector((state) => state.auth);
   const newChat = () => {
     console.log('create new chat');
   };
+
   React.useEffect(() => {
+    console.log(authState);
+    dispatch(authAction.inMainScreen());
     dispatch(chatAction.getAllList(token));
   }, []);
 
