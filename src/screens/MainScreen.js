@@ -39,9 +39,13 @@ export default function MainScreen() {
     console.log(authState);
     dispatch(authAction.inMainScreen());
     dispatch(chatAction.getAllList(token));
-    socket.on(selfId, ({senderData, message}) => {
+    socket.on(`send ${selfId}`, ({senderData, message}) => {
       dispatch(chatAction.getAllList(token));
       dispatch(chatAction.getPrivate(token, senderData.id));
+    });
+    socket.on(`read ${selfId}`, ({reciever, read}) => {
+      dispatch(chatAction.getAllList(token));
+      dispatch(chatAction.getPrivate(token, reciever));
     });
     return () => {
       socket.close();
