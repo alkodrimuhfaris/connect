@@ -2,6 +2,13 @@ import services from '../../helpers/services';
 import qs from 'qs';
 
 export default {
+  openOption: () => ({
+    type: 'OPEN_OPTION',
+  }),
+  openAddFriend: (opt) => ({
+    type: 'OPEN_ADD',
+    payload: opt,
+  }),
   getAllList: (token) => ({
     type: 'GET_LIST',
     payload: services(token).get('chat/list/all'),

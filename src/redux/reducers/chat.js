@@ -7,10 +7,24 @@ const initialState = {
   privateChatPageInfo: {},
   isError: false,
   alertMsg: '',
+  openOption: false,
+  openAdd: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case 'OPEN_OPTION': {
+      return {
+        ...state,
+        openOption: !state.openOption,
+      };
+    }
+    case 'OPEN_ADD': {
+      return {
+        ...state,
+        openAdd: action.payload,
+      };
+    }
     case 'GET_LIST_PENDING': {
       return {
         ...state,

@@ -5,14 +5,24 @@ import {
   FontAwesome,
   Ionicons,
 } from '@expo/vector-icons';
+import {useDispatch, useSelector} from 'react-redux';
+import chatAction from '../redux/actions/chat';
 
-export default function Header({name = 'Syamsul Bahari', phone, openOption}) {
+export default function Header() {
+  const dispatch = useDispatch();
+  const {profileColluctor} = useSelector((state) => state.chat);
+  const {name, phone} = profileColluctor;
+
   const goCall = () => {
     console.log('call');
   };
 
   const getNotes = () => {
     console.log('get my friend');
+  };
+
+  const openOption = () => {
+    dispatch(chatAction.openOption());
   };
 
   return (

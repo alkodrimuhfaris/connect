@@ -6,23 +6,31 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import {Feather} from '@expo/vector-icons';
-import SafeAreaView from 'react-native-safe-area-view';
 import {useSelector, useDispatch} from 'react-redux';
 import chatAction from '../redux/actions/chat';
 import authAction from '../redux/actions/auth';
-import Header from '../components/HeaderHome';
 import ChatList from '../components/ChatList';
+import SelectFriend from '../modals/SelectFriend';
+import ExploreUser from '../modals/ExploreUser';
+import ModalLoading from '../modals/ModalLoading';
 
 export default function MainScreen() {
   const chatList = useSelector((state) => state.chat.listAllChat);
   const pageInfo = useSelector((state) => state.chat.allChatPageInfo);
+  const isLoading = useSelector((state) => state.user.isLoading);
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
   const {token, authState} = useSelector((state) => state.auth);
+  const [openSelectChat, setOpenSelectChat] = React.useState(false);
+
   const newChat = () => {
-    console.log('create new chat');
+    console.log(openSelectChat);
+    setOpenSelectChat(true);
+    console.log('whaw');
   };
 
   React.useEffect(() => {
@@ -46,7 +54,23 @@ export default function MainScreen() {
   return (
     <SafeAreaView style={styles.parent}>
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
-      <Header />
+      {/* modal for select friend */}
+      <SelectFriend
+        modalOpen={openSelectChat}
+        setModalOpen={setOpenSelectChat}
+      />
+
+      {/* modal for add friend */}
+      <ExploreUser />
+
+      {/* modal for loading */}
+      <ModalLoading
+        modalOpen={isLoading}
+        modalContent={
+          <ActivityIndicator visible={isLoading} size="large" color="#56CF75" />
+        }
+      />
+
       <View style={styles.chatParent}>
         <FlatList
           onRefresh={doRefresh}
@@ -81,6 +105,7 @@ export default function MainScreen() {
 const styles = StyleSheet.create({
   parent: {
     width: '100%',
+    // height: Dimensions.get('screen').height - StatusBar.currentHeight,
     height: '100%',
     position: 'relative',
     backgroundColor: 'white',

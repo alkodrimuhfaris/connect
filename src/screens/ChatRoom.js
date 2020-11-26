@@ -24,7 +24,7 @@ import BubleChat from '../components/BubleChat';
 export default function ChatRoom({route}) {
   const dispatch = useDispatch();
   const [chat, setChat] = React.useState('');
-  const [openOption, setOpenOption] = React.useState(false);
+  const {openOption} = useSelector((state) => state.chat);
   const [loading, setLoading] = React.useState(false);
   const {id} = route.params;
   const {token} = useSelector((state) => state.auth);
@@ -37,6 +37,7 @@ export default function ChatRoom({route}) {
 
   React.useEffect(() => {
     setPrivateChat(dataChat);
+    dispatch(chatAction.getAllList(token));
   }, [dataChat]);
 
   React.useEffect(() => {
@@ -66,10 +67,6 @@ export default function ChatRoom({route}) {
     console.log('send emoji');
   };
 
-  const toggleOption = () => {
-    setOpenOption(!openOption);
-  };
-
   const doRefresh = () => {
     setLoading(true);
     dispatch(chatAction.getPrivate(token, id));
@@ -85,11 +82,6 @@ export default function ChatRoom({route}) {
   return (
     <SafeAreaView style={styles.parent}>
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
-      <Header
-        name={profileColluctor.name}
-        phone={profileColluctor.phone}
-        openOption={toggleOption}
-      />
       <View style={styles.chatParent}>
         {openOption ? (
           <View style={styles.option}>

@@ -3,11 +3,15 @@ import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import connectLogo from '../assets/logo/connectLogo.png';
 import {useNavigation} from '@react-navigation/native';
 import {Ionicons, MaterialIcons} from '@expo/vector-icons';
+import {useDispatch} from 'react-redux';
+import chatAction from '../redux/actions/chat';
 
 export default function Header() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const addFriend = () => {
-    console.log('add friend');
+    dispatch(chatAction.openAddFriend(true));
   };
 
   const getMyFriend = () => {
@@ -24,10 +28,10 @@ export default function Header() {
         <Image source={connectLogo} style={headerStyle.image} />
       </View>
       <View style={headerStyle.iconWrapper}>
-        <TouchableOpacity onPress={addFriend} style={headerStyle.icon}>
+        <TouchableOpacity onPress={getMyFriend} style={headerStyle.icon}>
           <Ionicons name="ios-person" size={22} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={getMyFriend} style={headerStyle.icon}>
+        <TouchableOpacity onPress={addFriend} style={headerStyle.icon}>
           <Ionicons name="ios-person-add" size={22} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={goToSetting} style={headerStyle.icon}>

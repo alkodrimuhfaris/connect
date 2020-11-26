@@ -3,120 +3,33 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Modal,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import {Form, Input, Item, Button, CheckBox} from 'native-base';
+import {Form, Input, Item, Button} from 'native-base';
 import {Entypo, EvilIcons} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
 import userAction from '../redux/actions/user';
-import placeholder from '../assets/photos/profilePlaceholder.png';
 import {useNavigation} from '@react-navigation/native';
+import FriendList from '../components/FriendList';
 
-// "FriendDetail": {
-//   "id": 2,
-//   "email": null,
-//   "name": "Mitsuha Miyamizu",
-//   "idName": null,
-//   "status": null,
-//   "phone": "089633449008",
-//   "ava": "Uploads/2-avatar-1606210917539.png",
-//   "createdAt": "2020-11-23T09:37:40.000Z",
-//   "updatedAt": "2020-11-24T09:41:59.000Z"
-// }
-
-const {EXPO_API_URL} = process.env;
-
-function FriendList({item, selectedID, setSelectedId}) {
-  const {item: friendData} = item;
-  const {id, name, status, phone, ava} = friendData.FriendDetail;
-
-  const check = id === selectedID;
-
-  return (
-    <View style={listStyle.parent}>
-      <TouchableOpacity style={listStyle.avaWrapper}>
-        <Image
-          source={ava ? {uri: EXPO_API_URL + ava} : placeholder}
-          style={listStyle.ava}
-        />
-      </TouchableOpacity>
-      <View style={listStyle.nameContainer}>
-        <View style={listStyle.nameWrapper}>
-          <Text style={listStyle.name}>{name ? name : phone}</Text>
-          <Text style={listStyle.status}>{status}</Text>
-        </View>
-      </View>
-      <View style={listStyle.checkbox}>
-        <CheckBox
-          color="#56CF75"
-          checked={check}
-          onPress={() => setSelectedId(id)}
-        />
-      </View>
-    </View>
-  );
-}
-
-const listStyle = StyleSheet.create({
-  parent: {
-    width: '100%',
-    padding: '5%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  avaWrapper: {
-    width: 80,
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  ava: {
-    width: 60,
-    aspectRatio: 1 / 1,
-    height: 60,
-    borderRadius: 60,
-  },
-  nameContainer: {
-    flexDirection: 'row',
-    flex: 1,
-    alignContent: 'flex-start',
-    justifyContent: 'center',
-    flexWrap: 'nowrap',
-    padding: '5%',
-  },
-  nameWrapper: {
-    width: '80%',
-  },
-  name: {
-    fontSize: 16,
-    color: '#222',
-  },
-  status: {
-    fontSize: 12,
-    color: '#999',
-  },
-  checkbox: {
-    marginRight: '10%',
-  },
-});
-
-export default function ChangeEmail({modalOpen, setModalOpen}) {
+export default function SelectFriend({modalOpen, setModalOpen}) {
   const dispatch = useDispatch();
-  const {token} = useSelector((state) => state.auth);
+  const navigation = useNavigation();
+  const token = useSelector((state) => state.auth.token);
   const allFriend = useSelector((state) => state.user.allFriend);
   const pageInfo = useSelector((state) => state.user.pageInfoAllFriend);
   const [search, setSearch] = React.useState('');
   const [selectedID, setSelectedId] = React.useState(0);
-  const navigation = useNavigation();
+  const [refresh, setRefresh] = React.useState(false);
 
   const startChat = () => {
     console.log(selectedID);
     setModalOpen(false);
     navigation.navigate('ChatRoom', {id: selectedID});
+    setSelectedId(0);
   };
 
   React.useEffect(() => {
@@ -127,6 +40,20 @@ export default function ChangeEmail({modalOpen, setModalOpen}) {
     console.log(search);
     dispatch(userAction.getAllFriend(token));
   }, []);
+
+  const nextPage = () => {
+    if (pageInfo.pages > pageInfo.currentPage) {
+      dispatch(
+        userAction.scrollAllFriend(token, pageInfo.currentPage + 1, {search}),
+      );
+    }
+  };
+
+  const doRefresh = () => {
+    setRefresh(true);
+    dispatch(userAction.getAllFriend(token, {search}));
+    setRefresh(false);
+  };
 
   return (
     <Modal
@@ -158,12 +85,18 @@ export default function ChangeEmail({modalOpen, setModalOpen}) {
         </Form>
         <View style={modalStyle.friendWrapper}>
           <FlatList
+            onEndReached={nextPage}
+            onEndReachedThreshold={0.5}
+            onRefresh={doRefresh}
+            refreshing={refresh}
             data={allFriend}
             renderItem={(item) => {
               return (
                 <View
                   style={
-                    item.index === allFriend.length ? modalStyle.endItem : null
+                    item.index === allFriend.length - 1
+                      ? modalStyle.endItem
+                      : null
                   }>
                   <FriendList
                     item={item}

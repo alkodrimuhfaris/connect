@@ -18,6 +18,20 @@ export default function ChatList({item}) {
     navigation.navigate('ChatRoom', {id});
   };
 
+  const messageTime = moment(createdAt);
+
+  const yesterday = moment().subtract(1, 'days');
+
+  const lastWeek = moment().subtract(7, 'days');
+
+  let time = moment(createdAt).format('h:mm A');
+
+  if (messageTime.isBefore(yesterday)) {
+    time = moment(createdAt).format('dddd');
+  } else if (messageTime.isBefore(lastWeek)) {
+    time = moment(createdAt).format('MM. DD');
+  }
+
   return (
     <View style={listStyles.parent}>
       <TouchableOpacity onPress={goToRoomChat} style={listStyles.imageWrapper}>
@@ -33,9 +47,7 @@ export default function ChatList({item}) {
           <Text numberOfLines={1} ellipsizeMode="tail" style={listStyles.name}>
             {name ? name : phone}
           </Text>
-          <Text style={listStyles.time}>
-            {moment(createdAt).format('MMM DD, YY')}
-          </Text>
+          <Text style={listStyles.time}>{time}</Text>
         </View>
 
         <View style={listStyles.chatWrapper}>

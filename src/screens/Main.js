@@ -29,6 +29,10 @@ import Chats from './Chats';
 import Calls from './Calls';
 import Friends from './Friends';
 
+//Header
+import HeaderHome from '../components/HeaderHome';
+import HeaderChat from '../components/HeaderChat';
+
 const Stack = createStackNavigator();
 
 const RegisterStack = () => {
@@ -75,15 +79,15 @@ const MainStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}>
       <Stack.Screen
-        options={{title: 'Chat List'}}
+        options={{header: () => <HeaderHome />}}
         name="MainScreen"
         component={MainScreen}
       />
       <Stack.Screen
-        options={{title: 'Chat Room'}}
+        options={{header: () => <HeaderChat />}}
         name="ChatRoom"
         component={ChatRoom}
       />
