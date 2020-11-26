@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {
   TouchableOpacity,
@@ -9,19 +10,22 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 import profileAction from '../redux/actions/profile';
 import authAction from '../redux/actions/auth';
+import passwordAction from '../redux/actions/password';
 import {useNavigation} from '@react-navigation/native';
 
 export default function ContentDelete({setModalOpen}) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {token, isLogin} = useSelector((state) => state.auth);
+  const [logoutClick, setLogoutClick] = React.useState(false);
+  const authState = useSelector((state) => state.auth.authState);
 
   React.useEffect(() => {
-    if (!isLogin) {
-      setModalOpen(false);
+    if (logoutClick && authState) {
       navigation.navigate('AuthStack');
+      setModalOpen(false);
     }
-  }, [isLogin, navigation, setModalOpen]);
+  }, [authState, logoutClick]);
 
   const cancel = () => {
     setModalOpen(false);
@@ -29,7 +33,10 @@ export default function ContentDelete({setModalOpen}) {
 
   const proceed = () => {
     dispatch(profileAction.deleteAccount(token));
-    dispatch(authAction.logout);
+    dispatch(authAction.logout());
+    dispatch(profileAction.logout());
+    dispatch(passwordAction.logout());
+    setLogoutClick(true);
   };
 
   return (

@@ -15,6 +15,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {useSelector, useDispatch} from 'react-redux';
 import profileAction from '../redux/actions/profile';
 import authAction from '../redux/actions/auth';
+import passwordAction from '../redux/actions/password';
 import placeholder from '../assets/photos/profilePlaceholder.png';
 
 const {EXPO_API_URL} = process.env;
@@ -63,13 +64,21 @@ function SelectorSetting({item}) {
   const authState = useSelector((state) => state.auth.authState);
   const {item: selectorData} = item;
   const {title, icon, navigate, logout} = selectorData;
+  const [logoutClick, setLogoutClick] = React.useState(false);
   const navigation = useNavigation();
+
+  React.useEffect(() => {
+    if (logoutClick && authState) {
+      navigation.navigate(navigate);
+    }
+  }, [authState, logoutClick]);
 
   const goToScreen = () => {
     if (logout) {
       dispatch(authAction.logout());
       dispatch(profileAction.logout());
-      navigation.navigate(navigate);
+      dispatch(passwordAction.logout());
+      setLogoutClick(true);
     } else {
       navigation.navigate(navigate);
     }

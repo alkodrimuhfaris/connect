@@ -16,9 +16,8 @@ import Header from '../components/HeaderHome';
 import ChatList from '../components/ChatList';
 
 export default function MainScreen() {
-  const {listAllChat: chatList, allChatPageInfo: pageInfo} = useSelector(
-    (state) => state.chat,
-  );
+  const chatList = useSelector((state) => state.chat.listAllChat);
+  const pageInfo = useSelector((state) => state.chat.allChatPageInfo);
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
   const {token, authState} = useSelector((state) => state.auth);

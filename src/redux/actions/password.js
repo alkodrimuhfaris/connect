@@ -14,4 +14,7 @@ export default {
     type: 'ADD_PASSWORD',
     payload: services(token).patch('user/password/add', qs.stringify(data)),
   }),
+  logout: () => ({
+    type: 'LOGOUT',
+  }),
 };

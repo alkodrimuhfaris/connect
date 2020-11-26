@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {
   TouchableOpacity,
@@ -13,13 +14,12 @@ import ModalChangeName from '../modals/ChangeName';
 import ModalChangeStatus from '../modals/ChangeStatus';
 import ModalChangeUserID from '../modals/ChangeUserID';
 import {useSelector, useDispatch} from 'react-redux';
-import authAction from '../redux/actions/auth';
+import uploadAvaHandler from '../helpers/uploadAva';
 import profileAction from '../redux/actions/profile';
 import placeholder from '../assets/photos/profilePlaceholder.png';
 import ModalCenter from '../modals/ModalCenter';
 import ContentSelector from '../components/ContentSelector';
 import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator';
 
 const {EXPO_API_URL} = process.env;
 
@@ -33,6 +33,10 @@ export default function Profile() {
   const [modalOption, setModalOption] = React.useState(false);
   const [avatar, setAvatar] = React.useState('');
 
+  React.useEffect(() => {
+    dispatch(profileAction.getProfile(token));
+  }, []);
+
   const changeAva = () => {
     setModalOption(true);
   };
@@ -40,6 +44,11 @@ export default function Profile() {
   const updateProfile = (data) => {
     console.log(data);
     dispatch(profileAction.patchProfile(token, data));
+  };
+
+  const updateAva = (data) => {
+    console.log(data);
+    dispatch(profileAction.uploadAva(token, data));
   };
 
   const changePhone = () => {
@@ -62,38 +71,27 @@ export default function Profile() {
 
   const selectOption = ['Open Galery', 'Open Camera'];
 
-  const uploadData = new FormData();
-
   const selectAction = async (index) => {
+    let result = {};
     if (index === 0) {
       console.log('open galery');
-      let result = await ImagePicker.launchImageLibraryAsync({
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+    } else if (index === 1) {
+      console.log('open camera');
+      result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
       });
-      console.log(result);
-      if (!result.cancelled) {
-        if (result.type === 'image') {
-          const manipResult = await ImageManipulator.manipulateAsync(
-            result.uri,
-            [],
-            {compress: 0.4},
-          );
-          uploadData.append('avatar', result.uri);
-          console.log(uploadData);
-          updateProfile(uploadData);
-          setAvatar(manipResult.uri);
-        } else {
-          alert('file must be image!');
-        }
-      }
-      setModalOption(false);
-    } else if (index === 1) {
-      console.log('open camera');
-      setModalOption(false);
     }
+    await uploadAvaHandler(result, updateAva, setAvatar);
+    setModalOption(false);
   };
 
   return (

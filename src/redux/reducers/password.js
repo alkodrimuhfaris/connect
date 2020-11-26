@@ -89,6 +89,15 @@ export default (state = initialState, action) => {
         alertMsg: 'Add password failed',
       };
     }
+    case 'LOGOUT': {
+      return {
+        isLoading: false,
+        isError: false,
+        isSuccess: false,
+        isPasswordExist: false,
+        alertMsg: '',
+      };
+    }
     default: {
       return state;
     }

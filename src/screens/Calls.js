@@ -17,7 +17,7 @@ export default function Calls() {
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonCheckbox}>
           <View style={styles.textWrapper}>
-            <Text style={styles.title}>Allow Others to Add by ID</Text>
+            <Text style={styles.title}>Allow voice calls</Text>
             <Text style={styles.subTitleCheckbox}>
               Disable this setting to reject calls and stop recieving missed
               call notifications

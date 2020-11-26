@@ -10,6 +10,10 @@ export default {
     type: 'EDIT_PROFILE',
     payload: services(token).patch('user/update', qs.stringify(data)),
   }),
+  uploadAva: (token, data = {}) => ({
+    type: 'EDIT_PROFILE',
+    payload: services(token).patch('user/update', data),
+  }),
   deleteAccount: (token) => ({
     type: 'DELETE_ACCOUNT',
     payload: services(token).delete('user/delete'),

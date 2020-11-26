@@ -19,6 +19,8 @@ import profileAction from '../redux/actions/profile';
 import {useSelector, useDispatch} from 'react-redux';
 import ModalCenter from '../modals/ModalCenter';
 import ContentSelector from '../components/ContentSelector';
+import * as ImagePicker from 'expo-image-picker';
+import uploadAvaHandler from '../helpers/uploadAva';
 
 export default function CreateNew() {
   const dispatch = useDispatch();
@@ -26,33 +28,53 @@ export default function CreateNew() {
   const {token} = useSelector((state) => state.auth);
   const [avatar, setAvatar] = React.useState('');
   const [modalOption, setModalOption] = React.useState(false);
+  const [nextPage, setNextPage] = React.useState(false);
   const navigation = useNavigation();
   const Schema = Yup.object().shape({
     name: Yup.string().required().max(20),
   });
 
   React.useEffect(() => {
-    if (isEdited) {
+    if (isEdited && nextPage) {
       navigation.navigate('CreatePassword');
       console.log('go next');
     }
-  }, [isEdited]);
+  }, [isEdited, nextPage]);
 
   const submitting = (values) => {
     console.log(values);
     dispatch(profileAction.patchProfile(token, values));
+    setNextPage(true);
+  };
+
+  const updateAva = (data) => {
+    console.log(data);
+    dispatch(profileAction.uploadAva(token, data));
   };
 
   const selectOption = ['Open Galery', 'Open Camera'];
 
-  const selectAction = (index) => {
+  const selectAction = async (index) => {
+    let result = {};
     if (index === 0) {
       console.log('open galery');
-      setModalOption(false);
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
     } else if (index === 1) {
       console.log('open camera');
-      setModalOption(false);
+      result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
     }
+    await uploadAvaHandler(result, updateAva, setAvatar);
+    setModalOption(false);
   };
 
   return (
@@ -103,7 +125,7 @@ export default function CreateNew() {
                   onPress={() => setModalOption(true)}
                   style={styles.photoWrapper}>
                   <Image
-                    source={avatar ? picturePlaceholder : picturePlaceholder}
+                    source={avatar ? {uri: avatar} : picturePlaceholder}
                     style={styles.photo}
                   />
                   <View style={styles.iconWrapper}>
