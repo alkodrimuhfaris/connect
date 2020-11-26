@@ -17,10 +17,12 @@ import ChatList from '../components/ChatList';
 import SelectFriend from '../modals/SelectFriend';
 import ExploreUser from '../modals/ExploreUser';
 import ModalLoading from '../modals/ModalLoading';
+import socket from '../helpers/socket';
 
 export default function MainScreen() {
   const chatList = useSelector((state) => state.chat.listAllChat);
   const pageInfo = useSelector((state) => state.chat.allChatPageInfo);
+  const selfId = useSelector((state) => state.auth.id);
   const isLoading = useSelector((state) => state.user.isLoading);
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
@@ -37,6 +39,13 @@ export default function MainScreen() {
     console.log(authState);
     dispatch(authAction.inMainScreen());
     dispatch(chatAction.getAllList(token));
+    socket.on(selfId, ({senderData, message}) => {
+      dispatch(chatAction.getAllList(token));
+      dispatch(chatAction.getPrivate(token, senderData.id));
+    });
+    return () => {
+      socket.close();
+    };
   }, []);
 
   const doRefresh = () => {

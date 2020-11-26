@@ -3,13 +3,15 @@ import {View, StyleSheet, Image, TouchableOpacity, Text} from 'react-native';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 import placeholder from '../assets/photos/profilePlaceholder.png';
+import {useSelector} from 'react-redux';
 
 const {EXPO_API_URL} = process.env;
 
 export default function ChatList({item}) {
   const navigation = useNavigation();
+  const selfId = useSelector((state) => state.auth.id);
   const {item: chatItem} = item;
-  let {colluctorProfile, chat, unreadChat, createdAt} = chatItem;
+  let {colluctorProfile, chat, unread, createdAt} = chatItem;
 
   const {id, name, ava, phone} = colluctorProfile;
 
@@ -17,6 +19,8 @@ export default function ChatList({item}) {
     console.log(id);
     navigation.navigate('ChatRoom', {id});
   };
+
+  const unreadChat = selfId === id && unread ? false : true;
 
   const messageTime = moment(createdAt);
 
@@ -44,7 +48,10 @@ export default function ChatList({item}) {
         onPress={goToRoomChat}
         style={listStyles.contentWrapper}>
         <View style={listStyles.headerWrapper}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={listStyles.name}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={[listStyles.name, unreadChat ? listStyles.unread : null]}>
             {name ? name : phone}
           </Text>
           <Text style={listStyles.time}>{time}</Text>
@@ -54,14 +61,15 @@ export default function ChatList({item}) {
           <Text
             numberOfLines={2}
             ellipsizeMode="tail"
-            style={listStyles.content}>
+            style={[listStyles.content, unreadChat ? listStyles.unread : null]}>
             {chat}
           </Text>
           {unreadChat ? (
             <View style={listStyles.unreadContainer}>
               <View style={listStyles.unreadWrapper}>
                 <Text style={listStyles.unreadTxt}>
-                  {unreadChat > 999 ? '999+' : unreadChat}
+                  {null}
+                  {/* {unreadChat > 999 ? '999+' : unreadChat} */}
                 </Text>
               </View>
             </View>
@@ -106,6 +114,9 @@ const listStyles = StyleSheet.create({
   name: {
     fontSize: 16,
     color: '#222',
+  },
+  unread: {
+    fontWeight: 'bold',
   },
   time: {
     fontSize: 12,
