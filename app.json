@@ -17,14 +17,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kodApp.connect",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/foreground.png",
         "backgroundImage": "./assets/background.png"
       },
-      "icon": "./assets/icon.png"
+      "icon": "./assets/icon.png",
+      "package": "com.kodApp.connect",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
