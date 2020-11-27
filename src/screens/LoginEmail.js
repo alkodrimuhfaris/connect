@@ -10,16 +10,27 @@ import {
 import {Entypo, MaterialCommunityIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
 import SafeAreaView from 'react-native-safe-area-view';
+import authAction from '../redux/actions/auth';
+import {useSelector, useDispatch} from 'react-redux';
 
 export default function LoginEmail() {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.auth.isLogin);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const navigation = useNavigation();
 
   React.useEffect(() => {
     console.log(email);
     console.log(password);
   }, [email, password]);
+
+  React.useEffect(() => {
+    if (isLogin) {
+      navigation.navigate('MainStack', {screen: 'MainScreen'});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLogin]);
 
   const delEmail = () => {
     setEmail('');
@@ -30,7 +41,7 @@ export default function LoginEmail() {
   };
 
   const goLogin = () => {
-    navigation.navigate('MainStack', {screen: 'MainScreen'});
+    dispatch(authAction.login({email, password}));
     console.log('go login');
   };
 

@@ -27,7 +27,7 @@ export default (state = initialState, action) => {
         isLogin: true,
         isError: false,
         token: action.payload.data.token,
-        id: action.payload.data.user.id,
+        id: action.payload.data.id,
         alertMsg: 'Login successfull',
       };
     }
@@ -36,7 +36,7 @@ export default (state = initialState, action) => {
         ...state,
         isLogin: false,
         isError: true,
-        alertMsg: 'Login failed',
+        alertMsg: action.payload.data.message,
       };
     }
     case 'SIGNUP_PENDING': {

@@ -13,6 +13,7 @@ import {
   MaterialCommunityIcons,
   Feather,
   SimpleLineIcons,
+  FontAwesome5,
 } from '@expo/vector-icons';
 import SafeAreaView from 'react-native-safe-area-view';
 import {Form} from 'native-base';
@@ -38,12 +39,14 @@ export default function ChatRoom({route}) {
   React.useEffect(() => {
     setPrivateChat(dataChat);
     dispatch(chatAction.getAllList(token));
+    dispatch(chatAction.readChat(token, id));
   }, [dataChat]);
 
   React.useEffect(() => {
     console.log(id);
     console.log(token);
     dispatch(chatAction.getPrivate(token, id));
+    dispatch(chatAction.readChat(token, id));
   }, []);
 
   const changeText = (e) => {
@@ -79,13 +82,30 @@ export default function ChatRoom({route}) {
     }
   };
 
+  const optionArr = [
+    {
+      name: 'Notification off',
+      icon: () => <FontAwesome5 name="volume-mute" size={20} color="black" />,
+      onPress: () => console.log('notif off'),
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.parent}>
       <StatusBar barStyle="dark-content" backgroundColor="#FDFDFD" />
       <View style={styles.chatParent}>
         {openOption ? (
           <View style={styles.option}>
-            <Text>option goes here</Text>
+            {optionArr.map((item) => {
+              return (
+                <TouchableOpacity
+                  onPress={item.onPress}
+                  style={styles.optionItem}>
+                  <View style={styles.optionIcon}>{item.icon()}</View>
+                  <Text style={styles.optionTxt}>{item.name}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         ) : null}
         <View style={styles.bubleChatParent}>
@@ -161,6 +181,24 @@ const styles = StyleSheet.create({
     borderWidth: 0.1,
     elevation: 1,
     backgroundColor: 'white',
+    zIndex: 3,
+  },
+  optionItem: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 10,
+  },
+  optionIcon: {
+    width: '20%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 5,
+  },
+  optionTxt: {
+    fontSize: 14,
+    color: '#222',
   },
   bubleChatParent: {
     width: '100%',

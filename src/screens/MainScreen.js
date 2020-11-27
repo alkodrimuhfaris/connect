@@ -17,7 +17,9 @@ import ChatList from '../components/ChatList';
 import SelectFriend from '../modals/SelectFriend';
 import ExploreUser from '../modals/ExploreUser';
 import ModalLoading from '../modals/ModalLoading';
-import socket from '../helpers/socket';
+// import socket from '../helpers/socket';
+import io from 'socket.io-client';
+const {EXPO_API_URL} = process.env;
 
 export default function MainScreen() {
   const chatList = useSelector((state) => state.chat.listAllChat);
@@ -36,14 +38,18 @@ export default function MainScreen() {
   };
 
   React.useEffect(() => {
+    const socket = io(EXPO_API_URL);
+    const readEvent = 'read ' + selfId;
+    const sendEvent = 'send ' + selfId;
     console.log(authState);
     dispatch(authAction.inMainScreen());
     dispatch(chatAction.getAllList(token));
-    socket.on(`send ${selfId}`, ({senderData, message}) => {
+    socket.on(sendEvent, ({senderData, message}) => {
+      console.log('theres an event');
       dispatch(chatAction.getAllList(token));
       dispatch(chatAction.getPrivate(token, senderData.id));
     });
-    socket.on(`read ${selfId}`, ({reciever, read}) => {
+    socket.on(readEvent, ({reciever, read}) => {
       dispatch(chatAction.getAllList(token));
       dispatch(chatAction.getPrivate(token, reciever));
     });

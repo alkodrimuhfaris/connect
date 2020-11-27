@@ -31,4 +31,8 @@ export default {
     type: 'SEND_CHAT',
     payload: services(token).post('chat/create/' + id, qs.stringify({chat})),
   }),
+  readChat: (token, id) => ({
+    type: 'READ_CHAT',
+    payload: services(token).patch('chat/read/' + id),
+  }),
 };

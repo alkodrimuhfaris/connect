@@ -167,6 +167,30 @@ export default (state = initialState, action) => {
         alertMsg: 'Sent chat failed',
       };
     }
+    case 'READ_CHAT_PENDING': {
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+        alertMsg: 'Reading chat ...',
+      };
+    }
+    case 'READ_CHAT_FULFILLED': {
+      return {
+        ...state,
+        isLogin: true,
+        isError: false,
+        alertMsg: 'Read chat successfull',
+      };
+    }
+    case 'READ_CHAT_REJECTED': {
+      return {
+        ...state,
+        isLogin: false,
+        isError: true,
+        alertMsg: 'Read chat failed',
+      };
+    }
     default: {
       return state;
     }

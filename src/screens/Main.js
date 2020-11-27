@@ -179,8 +179,12 @@ class Main extends Component {
           {this.props.auth.authState ? (
             <Stack.Screen name="AuthStack" component={AuthStack} />
           ) : null}
-          <Stack.Screen name="MainStack" component={MainStack} />
-          <Stack.Screen name="ProfileStack" component={ProfileStack} />
+          {this.props.auth.isLogin ? (
+            <Stack.Screen name="MainStack" component={MainStack} />
+          ) : null}
+          {this.props.auth.isLogin ? (
+            <Stack.Screen name="ProfileStack" component={ProfileStack} />
+          ) : null}
         </Stack.Navigator>
       </NavigationContainer>
     );

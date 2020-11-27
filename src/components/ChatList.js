@@ -11,7 +11,7 @@ export default function ChatList({item}) {
   const navigation = useNavigation();
   const selfId = useSelector((state) => state.auth.id);
   const {item: chatItem} = item;
-  let {colluctorProfile, chat, unread, createdAt} = chatItem;
+  let {colluctorProfile, chat, sender, unread, createdAt} = chatItem;
 
   const {id, name, ava, phone} = colluctorProfile;
 
@@ -20,7 +20,7 @@ export default function ChatList({item}) {
     navigation.navigate('ChatRoom', {id});
   };
 
-  const unreadChat = selfId === id && unread ? false : true;
+  const unreadChat = selfId !== sender && unread;
 
   const messageTime = moment(createdAt);
 
