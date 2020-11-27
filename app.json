@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/foreground.png",
         "backgroundImage": "./assets/background.png"
       },
-      "icon": "./assets/composite.png"
+      "icon": "./assets/icon.png"
     },
     "web": {
       "favicon": "./assets/favicon.png"
