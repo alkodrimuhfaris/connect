@@ -26,6 +26,6 @@ CONNECT is a 1 on 1 real-time chat app that serve you simple, intuitive and grea
 5. scan the barcode in your Expo Client App
 
 ## App screenshots
-<img src='https://drive.google.com/uc?id=1BtMEnoBNikUwjdkiwy4sfus0ClSAhXJi' width='25%'> <img src='https://drive.google.com/uc?id=1hO2bA4R2yZPmzST50c_RjTNv-xKXiFBD' width='25%'>
+<img src='https://drive.google.com/file/d/1ubcUaJgRfmqHF05d_KvWCdJq0mD502oR' width='25%'> <img src='https://drive.google.com/uc?id=1hO2bA4R2yZPmzST50c_RjTNv-xKXiFBD' width='25%'>
 
-<img src='https://drive.google.com/uc?id=1Trf9bsSGZC6B7i6UJVhtjyZYbMo3Ub7J' width='25%'> <img src='https://drive.google.com/uc?id=1znede9IansrBK9ei824vZH_VYKoNAWKG' width='25%'>
+<img src='https://drive.google.com/uc?id=1Trf9bsSGZC6B7i6UJVhtjyZYbMo3Ub7J' width='25%'> <img src='https://drive.google.com/file/d/1uo6EGyXhjXoNFGSAqceQFEcR4ZBWgKJ0' width='25%'>
