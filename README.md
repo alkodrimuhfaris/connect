@@ -1,6 +1,6 @@
 <h1 align="center">CONNECT Chat App with Expo and React Native</h1>
 
-<h3 align="center>CONNECT around the globe! chat and connect with your friends and family with CONNECT chat apps</h3>
+<h3 align="center">CONNECT around the globe! chat and connect with your friends and family with CONNECT chat apps</h3>
 
 CONNECT is a 1 on 1 real-time chat app that serve you simple, intuitive and great user experience
 
