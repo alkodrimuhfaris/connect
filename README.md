@@ -1,4 +1,4 @@
-<h1 align="center">Peworld Frontend Using React Native & Redux</h1>
+<h1 align="center">CONNECT Chat App with Expo and React Native</h1>
 
 <h3 align="center>CONNECT around the globe! chat and connect with your friends and family with CONNECT chat apps</h3>
 
