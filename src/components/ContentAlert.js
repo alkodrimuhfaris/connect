@@ -9,8 +9,8 @@ import {
 
 export default function ContentDelete({
   setModalOpen,
-  setOk = (val) => console.log(val),
-  setCancel = (val) => console.log(val),
+  setOk = (val) => val,
+  setCancel = (val) => val,
   contentUpper = '',
   contentLower = '',
   okText = 'Yes',
